@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: us.gcr.io/ticketing-407606/auth
+          image: dhruvjain9100/auth
 
 ---
 # creating a service
