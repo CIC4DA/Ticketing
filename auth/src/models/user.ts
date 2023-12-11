@@ -31,6 +31,19 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : true
     }
+}, {
+    // all this here helps to edit the output data of user we will get from mongoDB
+    // it is not the best approach and not used in model here
+    // but we are using
+    toJSON: {
+        transform(doc,ret) {
+            ret.id = ret._id;
+
+            delete ret.password;
+            delete ret._id;
+            delete ret.__v;
+        }
+    }
 });
 
 // we will call this function to make use of typescript interface
