@@ -4,6 +4,7 @@ import { RequestValidationError } from '../errors/request-validation-error';
 import { User } from '../models/user';
 import { BadRequestError } from '../errors/bad-request-error';
 import { Password } from '../services/password';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -36,6 +37,21 @@ async (req: Request,res : Response) => {
 
     const user = User.build({email,password : hashedPassword});
     await user.save();
+
+    // Genrating a JWT
+    // getting JWT Secret from env variables
+    // ! is used to say to typescript that we have checked this you can proceed
+    const userJwt = jwt.sign({
+        id: user.id,
+        email: user.email
+    },process.env.JWT_KEY!);
+
+    // storing it on cookie-session object
+    // when we see in browser it will be, encoded to base64.
+    // so to check jwt, we need first convert it back from base64 encode
+    req.session = {
+        jwt: userJwt
+    };
 
     res.status(201).send(user);
 });

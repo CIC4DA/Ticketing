@@ -2,10 +2,18 @@ import express from 'express';
 import mongoose from 'mongoose';
 import {json} from 'body-parser';
 import 'express-async-errors';
-
+import cookieSession from 'cookie-session';
 
 const app = express();
+// to make sure express is aware that we are under a proxy of ingress-nginx
+app.set('trust proxy',true);
 app.use(json());
+app.use(
+    cookieSession({
+        signed: false,
+        secure: true
+    })
+)
 
 // handling routes
 import { currentUserRouter } from './routes/current-user';
@@ -31,6 +39,10 @@ app.use(errorHandler);
 
 // MongoDB
 const start = async () => {
+    if(!process.env.JWT_KEY){
+        throw new Error("JWT_KEY must be defined");
+    }
+
     try {
         await mongoose.connect("mongodb://auth-mongo-srv:27017/auth");
         console.log("Mongo Connected");
