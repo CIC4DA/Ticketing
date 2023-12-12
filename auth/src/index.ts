@@ -14,8 +14,8 @@ const start = async () => {
         console.log("Error Connecting to MongoDB: ",error);
     }
 
-    app.listen(3000, ()=> {
-        console.log("Listining on port 3000!");
+    app.listen(4000, ()=> {
+        console.log("Listining on port 4000!");
         console.log("New console log 2");
     })
 
