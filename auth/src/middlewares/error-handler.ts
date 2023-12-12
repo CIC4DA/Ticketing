@@ -20,7 +20,7 @@ export const errorHandler = (
     next: NextFunction
 ) => {
     // console.log("Something went wrong", err);
-    console.log("asjdl;fkjasldfkjasdlk;fjasdf;kajsdf lkasjdflka ");
+    
     if(err instanceof CustomError){
         return res.status(err.statusCode).send({errors : err.serializeError()});
     }
