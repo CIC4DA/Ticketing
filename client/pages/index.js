@@ -13,6 +13,7 @@ const landingPage = ({ currentUser }) => {
 };
 
 // getInitialProps, if we want to fetch some data during server side rendering process, we can use this function
+// here context === {req,res}
 landingPage.getInitialProps = async (context) => {
     //URL is made to reach out to ingress-nginx, Watch videos from 230
     const client = buildClient(context);
