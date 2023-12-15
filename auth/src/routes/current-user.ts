@@ -1,8 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { currentUser } from '../middlewares/current-user';
-
-
+import { currentUser } from '@djticketing7/common';
 
 const router = express.Router();
 
