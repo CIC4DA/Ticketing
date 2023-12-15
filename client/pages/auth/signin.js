@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useForm } from "react-hook-form";
 import Router from "next/router";
 
-const signup = () => {
+const signin = () => {
     const [backendErrors, setBackendErrors] = useState([]);
     const {
         register,
@@ -107,7 +107,7 @@ const signup = () => {
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gradient-to-br from-pink-500 to-orange-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                Sign Up
+                                Sign In
                             </button>
                         </div>
                     </form>
@@ -124,4 +124,4 @@ const signup = () => {
     )
 }
 
-export default signup;
+export default signin;

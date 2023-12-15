@@ -1,10 +1,14 @@
 import buildClient from '../api/buildClient';
+import Navbar from '../components/Navbar';
 import '../styles/tailwind.css';
 
 const MyApp = ({ Component, pageProps, currentUser }) => {
+
+  const authPage = Component.name === 'signin' || Component.name === 'signup';
+
   return (
     <div>
-      <h1>Navbar {currentUser.email}</h1>
+      {!authPage && <Navbar />}
       <Component {...pageProps} />
     </div>
   )

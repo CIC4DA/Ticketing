@@ -2,13 +2,13 @@ import buildClient from '../api/buildClient';
 
 const landingPage = ({ currentUser }) => {
     return (
-        currentUser ?  
-        <div>
-            <h1 className='text-xl font-bold'>You are signed in</h1>
-        </div>  : 
-        <div>
-            <h1 className='text-xl font-bold'>You are Not signed in</h1>
-        </div>
+        currentUser ?
+            <div>
+                <h1 className='text-xl font-bold'>You are signed in</h1>
+            </div> :
+            <div>
+                <h1 className='text-xl font-bold'>You are Not signed in</h1>
+            </div>
     )
 };
 
