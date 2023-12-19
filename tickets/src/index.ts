@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import {app} from './app';
+import { natsWrapper } from './nats-wrapper';
 
 // MongoDB
 const start = async () => {
@@ -11,6 +12,21 @@ const start = async () => {
     }
 
     try {
+        // connecting node-nats-streaming 
+        await natsWrapper.connect('ticketing','randomString','http://nats-srv:4222');
+
+        // on closing the nats connection
+        natsWrapper.clientGetter.on('close', ()=> {
+            console.log("NATS connection Closed!");
+            process.exit();
+        })
+
+        // if nats connection get killed suddenly
+        process.on('SIGINT', () => natsWrapper.clientGetter.close());
+        process.on('SIGTERM', () => natsWrapper.clientGetter.close());
+
+
+        // connecting mongo DB
         await mongoose.connect(process.env.MONGO_URI);
         console.log("Mongo Connected");
     } catch (error) {
