@@ -7,13 +7,10 @@ const router = express.Router();
 
 router.post('/api/orders', requireAuth , 
 [
-    body('title')
+    body('ticketId')
         .not()
         .isEmpty()
-        .withMessage('Title is Required'),
-    body('price')
-        .isFloat({ gt: 0})
-        .withMessage("Price Must be greater than zero")
+        .withMessage('TicketId is Required'),
 ], validateRequest
 ,async (req:Request, res:Response) => {
 
