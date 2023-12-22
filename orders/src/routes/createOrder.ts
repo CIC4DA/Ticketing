@@ -21,7 +21,7 @@ router.post("/api/orders", requireAuth,
 ],validateRequest,
   async (req: Request, res: Response) => {
     const { ticketId } = req.body;
-
+    
     // Find the ticket, user is trying to order in the database
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
@@ -59,6 +59,7 @@ router.post("/api/orders", requireAuth,
         expiresAt: expiration,
         ticket: ticket.id
     })
+    await order.save();
 
     // Publish an event saying that an order was created
 

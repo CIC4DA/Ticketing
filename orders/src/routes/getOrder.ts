@@ -1,28 +1,29 @@
 import express , {Request,Response} from "express";
-import { requireAuth, validateRequest } from "@djticketing7/common";
-import {body} from 'express-validator';
-import { natsWrapper } from "../nats-wrapper";
+import { Ticket } from "../models/tickets";
+import { NotAuthorizedError, NotFoundError, requireAuth } from "@djticketing7/common";
+import { Order } from "../models/orders";
+import mongoose, { isValidObjectId } from "mongoose";
 
 const router = express.Router();
 
-router.get('/api/orders/:id', requireAuth , 
-[
-    body('title')
-        .not()
-        .isEmpty()
-        .withMessage('Title is Required'),
-    body('price')
-        .isFloat({ gt: 0})
-        .withMessage("Price Must be greater than zero")
-], validateRequest
-,async (req:Request, res:Response) => {
+router.get('/api/orders/:id', requireAuth,
+async (req:Request, res:Response) => {
 
-    const {title,price} = req.body;
+    const orderId = req.params.id;
+    if(!isValidObjectId(orderId)){
+        throw new NotFoundError();
+    }
 
-    
+    const order = await Order.findById(orderId).populate('ticket');
+    if(!order){
+        throw new NotFoundError();
+    }
+    if(order.userId !== req.currentUser!.id){
+        throw new NotAuthorizedError();
+    }
 
-    res.status(201);
-})
+    res.status(200).send(order);
+});
 
 
-export { router as getOrderRouter }
+export { router as getOrderRouter };

@@ -23,14 +23,14 @@ app.use(currentUser);
 // handling routes
 import { errorHandler, NotFoundError } from '@djticketing7/common';
 import { getOrderRouter } from './routes/getOrder';
-import { getOrdersRouter } from './routes/getOrders';
+import { getAllOrdersRouter } from './routes/getAllOrders';
 import { createOrderRouter } from './routes/createOrder';
-import { deleteOrderRouter } from './routes/deleteOrder';
+import { cancelOrderRouter } from './routes/cancelOrder';
 
 app.use(getOrderRouter);
-app.use(getOrdersRouter);
+app.use(getAllOrdersRouter);
 app.use(createOrderRouter);
-app.use(deleteOrderRouter);
+app.use(cancelOrderRouter);
 
 
 // handling the route error 
