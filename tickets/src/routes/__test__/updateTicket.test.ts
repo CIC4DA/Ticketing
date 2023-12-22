@@ -3,6 +3,7 @@ import { app } from "../../app";
 import mongoose from "mongoose";
 import { signinHelper } from "../../test/signin-helper";
 import { Ticket } from "../../models/tickets";
+import { natsWrapper } from "../../nats-wrapper";
 
 it('returns a 404 if the provided id does not exist',async () => {
     const id = new mongoose.Types.ObjectId().toHexString();
@@ -109,3 +110,26 @@ it('updates the ticket provided valid inputs',async () => {
     expect(ticketResponse.body.price).toEqual(21);
 
 });
+
+it("Publishes an event", async () => {
+    const cookie = signinHelper();
+
+    const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+        title: 'asdasd',
+        price : 10
+    });
+
+    await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie',cookie)
+    .send({
+        title : 'New Title',
+        price: 21
+    })
+    .expect(200);
+
+    expect(natsWrapper.clientGetter.publish).toHaveBeenCalled();
+})

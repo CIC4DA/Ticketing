@@ -6,6 +6,10 @@ import mongoose from 'mongoose';
 // }
 // when we use supertest we are not using https connection, instead we are using http connection
 
+// mocking the nats-wrapper file
+// to mock running nats client for the test
+jest.mock('../nats-wrapper');
+
 let mongo: any;
 
 // it is hook, that will run before all our tests start executing
@@ -19,6 +23,9 @@ beforeAll (async () => {
 
 // it is hook, that will run before each our tests start executing
 beforeEach( async () => {
+    // to clear all mocks data
+    jest.clearAllMocks();
+    
     const collections = await mongoose.connection.db.collections();
 
     for(let collection of collections){
