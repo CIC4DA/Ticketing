@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { Order } from "./orders";
+import { OrderStatus } from "@djticketing7/common";
 
 // An interface that describes the properties
 // that are required to make a New Tickets
@@ -9,11 +11,12 @@ interface TicketAttrs {
 }
 
 // An interface that describes the properties
-// that an Ticket Document has
+// that an Ticket Document has, which get returned to us
 export interface TicketDoc extends mongoose.Document{
     title: string;
     price: number;
     userId: string;
+    isReserved(): Promise<boolean>
 }
 
 // An interface that describes the properties
@@ -52,6 +55,23 @@ const ticketSchema = new mongoose.Schema({
 // we will call this function to make use of typescript interface
 ticketSchema.statics.build = (attributes: TicketAttrs) => {
     return new Ticket(attributes);
+};
+
+// this will allow us call this method on the data sent from mongoDB
+ticketSchema.methods.isReserved = async function(){
+    // this === the ticket document that we just called 'isReserved' on
+    const existingOrder = await Order.findOne({
+        ticket: this.id,
+        status: {
+            $in: [
+                OrderStatus.Created,
+                OrderStatus.AwaitingPayment,
+                OrderStatus.Complete
+            ]
+        }
+    })
+
+    return existingOrder ? true : false;
 };
 
 // now we can use User.build() to build a new ticket;

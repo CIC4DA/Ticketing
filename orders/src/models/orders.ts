@@ -8,7 +8,7 @@ interface OrderAttributes {
     userId: string;
     status: OrderStatus;
     expiresAt: Date;
-    ticketId: TicketDoc;
+    ticket: TicketDoc;
 }
 
 // An interface that describes the properties
@@ -17,7 +17,7 @@ interface OrderDoc extends mongoose.Document {
     userId: string;
     status: string;
     expiresAt: Date;
-    ticketId: TicketDoc;
+    ticket: TicketDoc;
 }
 
 // An interface that describes the properties
@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema({
     expiresAt : {
         type : mongoose.Schema.Types.Date,
     },
-    ticketId : {
+    ticket : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'Ticket'
     }
