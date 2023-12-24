@@ -2,6 +2,8 @@ import express , {Request,Response} from "express";
 import { NotAuthorizedError, NotFoundError, OrderStatus, requireAuth } from "@djticketing7/common";
 import { isValidObjectId } from "mongoose";
 import { Order } from "../models/orders";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -23,6 +25,18 @@ router.patch('/api/orders/:id', requireAuth ,
         }
         order.status = OrderStatus.Cancelled;
         await order.save();
+
+        // Publish an event saying that an order was cancelled
+        new OrderCancelledPublisher(natsWrapper.clientGetter).publish({
+            id: order.id,
+            status: OrderStatus.Cancelled,
+            userId: order.userId,
+            expiresAt: order.expiresAt.toISOString(),
+            ticket: {
+              id: order.ticket.id,
+              price: order.ticket.price
+            }
+          })
 
         res.status(204).send(order);
 

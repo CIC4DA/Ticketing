@@ -88,4 +88,19 @@ it("returns an error if the ticket is already reserved", async () => {
 });
 
 
+it('emits an order created event',async () => {
+    const ticket = Ticket.build({
+        title: "Concert",
+        price: 20,
+        userId: "asdasdasd"
+    })
+    await ticket.save();
 
+    await request(app)
+        .post('/api/orders')
+        .set('Cookie',signinHelper())
+        .send({ticketId: ticket.id})
+        .expect(201);
+
+    expect(natsWrapper.clientGetter.publish).toHaveBeenCalled();
+})
