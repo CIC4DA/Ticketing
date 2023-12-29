@@ -35,7 +35,8 @@ router.patch('/api/orders/:id', requireAuth ,
             ticket: {
               id: order.ticket.id,
               price: order.ticket.price
-            }
+            },
+            version: order.version
           })
 
         res.status(204).send(order);

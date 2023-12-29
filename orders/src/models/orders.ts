@@ -1,6 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import { OrderStatus } from "@djticketing7/common";
 import { TicketDoc } from "./tickets";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 // An interface that describes the properties
 // that are required to make a New order
@@ -18,6 +19,7 @@ interface OrderDoc extends mongoose.Document {
     status: string;
     expiresAt: Date;
     ticket: TicketDoc;
+    version: number;
 }
 
 // An interface that describes the properties
@@ -58,6 +60,11 @@ const orderSchema = new mongoose.Schema({
         }
     }
 });
+
+// this is to set the version as a field
+orderSchema.set('versionKey','version');
+// this is plugin to control updates with version
+orderSchema.plugin(updateIfCurrentPlugin);
 
 // we will call this function to make use of typescript interface
 orderSchema.statics.build = (attributes : OrderAttributes) => {

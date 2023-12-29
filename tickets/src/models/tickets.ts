@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 // An interface that describes the properties
 // that are required to make a New Tickets
@@ -14,6 +15,7 @@ interface TicketDoc extends mongoose.Document{
     title: string;
     price: number;
     userId: string;
+    version: number;
 }
 
 // An interface that describes the properties
@@ -47,6 +49,12 @@ const ticketSchema = new mongoose.Schema({
         }
     }
 });
+
+// this is to set the version as a field
+ticketSchema.set('versionKey','version');
+// this is plugin to control updates with version
+ticketSchema.plugin(updateIfCurrentPlugin);
+
 
 // we will call this function to make use of typescript interface
 ticketSchema.statics.build = (attributes: TicketAttrs) => {
