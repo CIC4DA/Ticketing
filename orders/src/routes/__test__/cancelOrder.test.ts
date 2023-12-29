@@ -5,14 +5,17 @@ import { app } from '../../app';
 import { Order } from '../../models/orders';
 import { OrderStatus } from '@djticketing7/common';
 import { natsWrapper } from '../../nats-wrapper';
+import mongoose from 'mongoose';
 
 it('marks an order as cancelled', async () => {
     // create a ticket with ticket model
+    const ticketId = new mongoose.Types.ObjectId().toHexString();
     const ticket = Ticket.build({
+        id: ticketId,
         title: "Concert",
         price: 20,
-        userId: "123123"
-    });
+        userId: "asdasdasd"
+    })
     await ticket.save();
 
     const user = signinHelper();
@@ -37,11 +40,13 @@ it('marks an order as cancelled', async () => {
 
 it('emits an order cancelled event',async () => {
     // create a ticket with ticket model
+    const ticketId = new mongoose.Types.ObjectId().toHexString();
     const ticket = Ticket.build({
+        id: ticketId,
         title: "Concert",
         price: 20,
-        userId: "123123"
-    });
+        userId: "asdasdasd"
+    })
     await ticket.save();
 
     const user = signinHelper();

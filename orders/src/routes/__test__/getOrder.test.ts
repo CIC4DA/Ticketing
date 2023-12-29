@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import { signinHelper } from "../../test/signin-helper";
 import { Ticket } from "../../models/tickets";
+import mongoose from "mongoose";
 
 it("returns 404 if order does not exist", async () => {
     await request(app)
@@ -12,11 +13,13 @@ it("returns 404 if order does not exist", async () => {
 });
 
 it("returns 401 if user access someone else order", async () => {
-    // creating three ticket
+    // creating ticket
+    const ticketId = new mongoose.Types.ObjectId().toHexString();
     const ticket = Ticket.build({
-        title: "CONCERt",
+        id: ticketId,
+        title: "Concert",
         price: 20,
-        userId:"asasdasd"
+        userId: "asdasdasd"
     })
     await ticket.save();
 
@@ -38,11 +41,13 @@ it("returns 401 if user access someone else order", async () => {
 });
 
 it("can fetch a particular order for a particular user", async () => {
-    // creating three ticket
+    // creating ticket
+    const ticketId = new mongoose.Types.ObjectId().toHexString();
     const ticket = Ticket.build({
-        title: "CONCERt",
+        id: ticketId,
+        title: "Concert",
         price: 20,
-        userId:"asasdasd"
+        userId: "asdasdasd"
     })
     await ticket.save();
 

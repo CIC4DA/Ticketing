@@ -5,6 +5,7 @@ import { OrderStatus } from "@djticketing7/common";
 // An interface that describes the properties
 // that are required to make a New Tickets
 interface TicketAttrs {
+    id: string
     title: string;
     price: number;
     userId: string;
@@ -54,7 +55,14 @@ const ticketSchema = new mongoose.Schema({
 
 // we will call this function to make use of typescript interface
 ticketSchema.statics.build = (attributes: TicketAttrs) => {
-    return new Ticket(attributes);
+    // here we are assinging _id, so that the database contains the same id of tickets as it is in tickeservice
+
+    return new Ticket({
+        _id: attributes.id,
+        title: attributes.title,
+        price: attributes.price,
+        userId: attributes.userId,
+    });
 };
 
 // this will allow us call this method on the data sent from mongoDB
