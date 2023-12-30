@@ -1,5 +1,5 @@
 import express , {Request,Response} from "express";
-import { requireAuth, validateRequest, NotFoundError, NotAuthorizedError } from "@djticketing7/common";
+import { requireAuth, validateRequest, NotFoundError, NotAuthorizedError, BadRequestError } from "@djticketing7/common";
 import {body} from 'express-validator';
 import { Ticket } from "../models/tickets";
 import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-event";
@@ -28,6 +28,10 @@ router.put('/api/tickets/:id', requireAuth ,
     // Checking the ticket is owned by the same user
     if(ticket.userId !== req.currentUser!.id) {
         throw new NotAuthorizedError();
+    }
+
+    if(ticket.orderId){
+        throw new BadRequestError("Cannot edit a Resereved Ticket");
     }
 
     ticket.set({
