@@ -28,7 +28,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: tickets-srv
+                name: orders-srv
                 port:
                   number: 4002
           - path: /?(.*)

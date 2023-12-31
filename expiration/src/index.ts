@@ -1,4 +1,5 @@
 
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 import { natsWrapper } from "./nats-wrapper";
 
 // MongoDB
@@ -11,6 +12,9 @@ const start = async () => {
   }
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error("NATS_CLIENT_ID must be defined");
+  }
+  if (!process.env.REDIS_HOST) {
+    throw new Error("REDIS_HOST must be defined");
   }
 
   try {
@@ -30,6 +34,9 @@ const start = async () => {
     // if nats connection get killed suddenly
     process.on("SIGINT", () => natsWrapper.clientGetter.close());
     process.on("SIGTERM", () => natsWrapper.clientGetter.close());
+
+    //listening to incomming events in NATS
+    new OrderCreatedListener(natsWrapper.clientGetter).listen();
 
   } catch (error) {
     console.log(error);
