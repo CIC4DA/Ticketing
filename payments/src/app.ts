@@ -22,8 +22,9 @@ app.use(currentUser);
 
 // handling routes
 import { errorHandler, NotFoundError } from '@djticketing7/common';
+import { createChargeRouter } from './routes/createCharge';
 
-
+app.use(createChargeRouter);
 
 
 // handling the route error 

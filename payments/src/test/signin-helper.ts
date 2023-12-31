@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-export const signinHelper = () => {
+export const signinHelper = (id?: string) => {
     // Build a JWT Payload, {id, email}
-    const id = new mongoose.Types.ObjectId().toHexString();
     const payload = {
-        id,
+        id : id || new mongoose.Types.ObjectId().toHexString(),
         email : "test@test.com"
     }
 
