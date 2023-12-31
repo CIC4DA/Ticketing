@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
-
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
 // MongoDB
 const start = async () => {
@@ -38,6 +39,10 @@ const start = async () => {
     // if nats connection get killed suddenly
     process.on("SIGINT", () => natsWrapper.clientGetter.close());
     process.on("SIGTERM", () => natsWrapper.clientGetter.close());
+
+    // listening to incomming events in NATS
+    new OrderCreatedListener(natsWrapper.clientGetter).listen();
+    new OrderCancelledListener(natsWrapper.clientGetter).listen();
 
     // connecting mongo DB
     await mongoose.connect(process.env.MONGO_URI);
