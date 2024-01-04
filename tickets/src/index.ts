@@ -6,6 +6,7 @@ import { OrderCancelledListener } from "./events/listeners/order-cancelled-liste
 
 // MongoDB
 const start = async () => {
+  console.log("Startingsdfsdf");
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
   }
