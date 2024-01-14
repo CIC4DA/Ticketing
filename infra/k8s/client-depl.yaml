@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: dhruvjain9100/client
+          image: us.gcr.io/ticketing-407606/client
 
 ---
 # creating a service
