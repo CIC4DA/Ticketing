@@ -14,6 +14,12 @@ jobs:
     - name: code checkout
       uses: actions/checkout@v2
 
+    - name: Install Cloud SDK
+      run: |
+        curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz
+        tar -xvf google-cloud-sdk-342.0.0-linux-x86_64.tar.gz
+        ./google-cloud-sdk/install.sh
+
     - name: install the gcloud cli
       uses: google-github-actions/setup-gcloud@v2
       with:
