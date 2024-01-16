@@ -20,6 +20,7 @@ const start = async () => {
     app.listen(4000, ()=> {
         console.log("Listining on port 4000!");
         console.log("New console log 2");
+        console.log("Change in auth");
     })
 
 }
