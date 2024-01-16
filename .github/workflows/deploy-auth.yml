@@ -14,6 +14,9 @@ jobs:
     - name: code checkout
       uses: actions/checkout@v2
 
+    - name: Set Python Version
+      run: echo "CLOUDSDK_PYTHON=python3" >> $GITHUB_ENV
+
     - name: Install Cloud SDK
       run: |
         curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz
