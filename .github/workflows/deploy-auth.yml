@@ -15,6 +15,12 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v2
 
+      - name: Install Python 3.8
+        run: sudo apt-get install python3.8
+
+      - name: Set Python Version to 3.8
+        run: echo "CLOUDSDK_PYTHON=python3.8" >> $GITHUB_ENV
+
       - name: Check Python Version
         run: python3 --version
 
