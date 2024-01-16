@@ -33,7 +33,7 @@ jobs:
 
     - name: Configure Kubernetes Cluster
       run: |
-        gcloud container clusters get-credentials your-cluster-name --zone your-zone
+        gcloud container clusters get-credentials ticketing-dev --zone asia-south1-b
 
     - name: Apply Kubernetes Deployment
       run: kubectl rollout restart deployment auth-depl
