@@ -36,4 +36,4 @@ jobs:
         gcloud container clusters get-credentials ticketing-dev --zone asia-south1-b
 
     - name: Apply Kubernetes Deployment
-      run: kubectl apply -f infra/k8s && kubectl apply -f infra/prod
+      run: kubectl apply -f infra/k8s && kubectl apply -f infra/k8s-prod
