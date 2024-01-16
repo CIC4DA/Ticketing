@@ -20,9 +20,6 @@ jobs:
     - name: Set Python Version
       run: echo "CLOUDSDK_PYTHON=python3" >> $GITHUB_ENV
 
-    - name: Set Python Version
-      run: echo "CLOUDSDK_PYTHON=python3" >> $GITHUB_ENV
-
     - name: Install Cloud SDK
       run: |
         curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz
@@ -43,7 +40,7 @@ jobs:
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
       run: |
         gcloud auth configure-docker us.gcr.io
-        cd auth && docker build -t us.gcr.io/$GOOGLE_PROJECT/auth .
+        cd auth && docker build -t us.gcr.io/$GOOGLE_PROJECT/auth ./auth
         docker push us.gcr.io/$GOOGLE_PROJECT/auth
 
     - name: Configure Kubernetes Cluster
@@ -51,5 +48,5 @@ jobs:
         gcloud container clusters get-credentials ticketing-dev --zone asia-south1-b
 
     - name: Apply Kubernetes Deployment
-      run: kubectl rollout restart deployment auth-depl
+      run: kubectl rollout restart deployment auth-depl 
 
