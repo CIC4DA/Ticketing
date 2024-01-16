@@ -7,14 +7,34 @@ on:
     paths: 
       - 'auth/**'
 jobs:
-  build:
+ deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: cd auth && docker build -t dhruvjain9100/auth .
-      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        env: 
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      - run: docker push dhruvjain9100/auth
-      
+
+    - name: code checkout
+      uses: actions/checkout@v2
+
+    - name: install the gcloud cli
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '342.0.0'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+        install_components: 'gke-gcloud-auth-plugin'
+
+    - name: build and push the docker image
+      env:
+        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+      run: |
+        gcloud auth configure-docker us.gcr.io
+        cd auth && docker build -t us.gcr.io/$GOOGLE_PROJECT/auth .
+        docker push us.gcr.io/$GOOGLE_PROJECT/auth
+
+    - name: Configure Kubernetes Cluster
+      run: |
+        gcloud container clusters get-credentials your-cluster-name --zone your-zone
+
+    - name: Apply Kubernetes Deployment
+      run: kubectl rollout restart deployment auth-depl
+
