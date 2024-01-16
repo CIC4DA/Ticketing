@@ -1,52 +1,47 @@
-name: deploy-auth 
+name: deploy-auth
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - main
-    paths: 
+    paths:
       - 'auth/**'
+
 jobs:
- deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Code Checkout
+        uses: actions/checkout@v2
 
-    - name: code checkout
-      uses: actions/checkout@v2
+      - name: Install Google Cloud SDK
+        run: |
+          curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz -o gcloud-sdk.tar.gz
+          tar -xf gcloud-sdk.tar.gz
+          ./google-cloud-sdk/install.sh
 
-    - name: Install Python
-      run: sudo apt-get install python3
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '342.0.0'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+          install_components: 'gke-gcloud-auth-plugin'
 
-    - name: Set Python Version
-      run: echo "CLOUDSDK_PYTHON=python3" >> $GITHUB_ENV
+      - name: Build and Push Docker Image
+        env:
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+        run: |
+          gcloud auth configure-docker us.gcr.io
+          docker build -t us.gcr.io/$GOOGLE_PROJECT/auth ./auth
+          docker push us.gcr.io/$GOOGLE_PROJECT/auth
 
-    - name: Install Cloud SDK
-      run: |
-        curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz
-        tar -xvf google-cloud-sdk-342.0.0-linux-x86_64.tar.gz
-        ./google-cloud-sdk/install.sh
+      - name: Configure Kubernetes Cluster
+        run: |
+          gcloud container clusters get-credentials ticketing-dev --zone asia-south1-b || exit 1
 
-    - name: install the gcloud cli
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        version: '342.0.0'
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        export_default_credentials: true
-        install_components: 'gke-gcloud-auth-plugin'
-
-    - name: build and push the docker image
-      env:
-        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-      run: |
-        gcloud auth configure-docker us.gcr.io
-        cd auth && docker build -t us.gcr.io/$GOOGLE_PROJECT/auth ./auth
-        docker push us.gcr.io/$GOOGLE_PROJECT/auth
-
-    - name: Configure Kubernetes Cluster
-      run: |
-        gcloud container clusters get-credentials ticketing-dev --zone asia-south1-b
-
-    - name: Apply Kubernetes Deployment
-      run: kubectl rollout restart deployment auth-depl 
-
+      - name: Apply Kubernetes Deployment
+        run: |
+          kubectl rollout restart deployment auth-depl || exit 1
