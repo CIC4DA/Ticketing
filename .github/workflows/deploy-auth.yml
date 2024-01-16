@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: install the gcloud cli
-      uses: google-github-actions/setup-gcloud@master
+      uses: google-github-actions/setup-gcloud@v0
       with:
         version: '342.0.0'
         project_id: ${{ secrets.GCP_PROJECT_ID }}
