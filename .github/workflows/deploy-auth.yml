@@ -32,6 +32,9 @@ jobs:
           curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz -o gcloud-sdk.tar.gz
           tar -xf gcloud-sdk.tar.gz
           ./google-cloud-sdk/install.sh
+      
+      - name: Update Google Cloud SDK components
+        run: gcloud components update
 
       - name: Set up Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v2
