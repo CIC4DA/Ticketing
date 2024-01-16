@@ -16,8 +16,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Python 3.8
-        run: sudo apt-get install python3.8
-
+        run: |
+          sudo add-apt-repository ppa:deadsnakes/ppa -y
+          sudo apt-get update
+          sudo apt-get install python3.8
+          
       - name: Set Python Version to 3.8
         run: echo "CLOUDSDK_PYTHON=python3.8" >> $GITHUB_ENV
 
