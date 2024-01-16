@@ -15,6 +15,9 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v2
 
+      - name: Set Python Version to 3.5
+        run: echo "CLOUDSDK_PYTHON=python3.5" >> $GITHUB_ENV
+
       - name: Install Google Cloud SDK
         run: |
           curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-342.0.0-linux-x86_64.tar.gz -o gcloud-sdk.tar.gz
