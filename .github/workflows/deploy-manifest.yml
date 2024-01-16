@@ -1,0 +1,39 @@
+name: deploy-auth 
+
+on: 
+  push:
+    branches: 
+      - main
+    paths: 
+      - 'infra/**'
+jobs:
+ deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: code checkout
+      uses: actions/checkout@v2
+
+    - name: install the gcloud cli
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '342.0.0'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+        install_components: 'gke-gcloud-auth-plugin'
+
+    - name: build and push the docker image
+      env:
+        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+      run: |
+        gcloud auth configure-docker us.gcr.io
+        cd auth && docker build -t us.gcr.io/$GOOGLE_PROJECT/auth .
+        docker push us.gcr.io/$GOOGLE_PROJECT/auth
+
+    - name: Configure Kubernetes Cluster
+      run: |
+        gcloud container clusters get-credentials ticketing-dev --zone asia-south1-b
+
+    - name: Apply Kubernetes Deployment
+      run: kubectl apply -f infra/k8s && kubectl apply -f infra/prod
