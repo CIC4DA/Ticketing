@@ -14,6 +14,12 @@ jobs:
     - name: code checkout
       uses: actions/checkout@v2
 
+    - name: Install Python
+      run: sudo apt-get install python3
+
+    - name: Set Python Version
+      run: echo "CLOUDSDK_PYTHON=python3" >> $GITHUB_ENV
+
     - name: Set Python Version
       run: echo "CLOUDSDK_PYTHON=python3" >> $GITHUB_ENV
 
